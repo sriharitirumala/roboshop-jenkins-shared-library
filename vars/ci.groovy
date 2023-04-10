@@ -1,25 +1,22 @@
-def call (){
+def call () {
     pipeline {
         agent any
 
-        s tages {
-            stage("Compile/Build") {
+        stages {
+
+            stage('Compile/Build') {
                 steps {
-                    scrpit {
-                        if (app_lang == "nodejs") {
-                            sh 'npm install'
-                        }
-                        if (app_lang == "maven") {
-                            sh 'mvn package'
-                        }
+                    script {
+                        common.compile()
                     }
                 }
             }
-        }
 
-            stage ("Test Cases") {
-                steps{
-                    echo "Test Cases"
+            stage('Test Cases') {
+                steps {
+                    script {
+                        common.testcases()
+                    }
                 }
             }
         }
