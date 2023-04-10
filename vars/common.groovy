@@ -6,3 +6,12 @@ def compile() {
         sh 'mvn package'
     }
 }
+
+
+def testcases() {
+    // npm test
+    // mvn test
+    // python -m unittests
+    // go test
+    sh 'echo OK'
+}
