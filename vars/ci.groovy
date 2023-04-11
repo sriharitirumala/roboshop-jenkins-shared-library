@@ -30,12 +30,13 @@ def call () {
                     }
                 }
             }
-            post {
-                failure {
-                    mail  body: '${component} - Pipeline Failed \n ${BUILD_URL}', from: 'sritirumala30@gmail.com',  subject: '${component}', to: 'sritirumala30@gmail.com'
+        }
+        post {
+            failure {
+                mail body: '${component} - Pipeline Failed \n ${BUILD_URL}', from: 'sritirumala30@gmail.com', subject: '${component}', to: 'sritirumala30@gmail.com'
 
-                }
             }
         }
     }
+
 }
