@@ -1,10 +1,10 @@
 def call () {
     if (!env.sonar_extra_opts) {
-        env.sonar_extra_opts=""
+        env.sonar_extra_opts = ""
     }
-    node ('workstation') {
+    node('workstation') {
         try {
-            stage('Check Out Code'){
+            stage('Check Out Code') {
                 sh 'ls -l'
                 cleanWs()
                 sh 'ls -l'
@@ -12,12 +12,13 @@ def call () {
                 sh 'ls -l'
             }
 
-
-            stage('Compile/Build') {
-                sh 'env'
-                common.compile()
-
+            sh 'env'
+            if (env.BRANCH_NAME != "main"){
+                stage('Compile/Build'){
+                    common.compile()
+                }
             }
+
 
             stage('Test Cases') {
                 common.testcases()
@@ -27,13 +28,11 @@ def call () {
             stage('Code Quality') {
                 common.codequality()
             }
-        } catch (exception) {
-            post {
-                failure {
-                    mail body: "${component} - Pipeline Failed \n ${BUILD_URL}", from: 'sritirumala30@gmail.com', subject: "${component} - Pipeline Failed", to: 'sritirumala30@gmail.com'
+        } catch (e) {
+            mail body: "${component} - Pipeline Failed \n ${BUILD_URL}", from: 'sritirumala30@gmail.com', subject: "${component} - Pipeline Failed", to: 'sritirumala30@gmail.com', mimeType: 'text/html'
 
-                }
-            }
         }
     }
 }
+
+
