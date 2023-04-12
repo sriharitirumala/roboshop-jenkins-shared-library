@@ -2,14 +2,16 @@ def call () {
     if (!env.sonar_extra_opts) {
         env.sonar_extra_opts = ""
     }
+
+    if (env.TAG_NAME !=~ ".*"){
+        env.GTAG = "true"
+    }
+
     node('workstation') {
         try {
             stage('Check Out Code') {
-                sh 'ls -l'
                 cleanWs()
-                sh 'ls -l'
                 git branch: 'main', url: 'https://github.com/sriharitirumala/cart'
-                sh 'ls -l'
             }
 
             sh 'env'
