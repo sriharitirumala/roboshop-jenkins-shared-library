@@ -8,8 +8,8 @@ def call () {
         stages {
 
             stage('Compile/Build') {
+                when {not {branch 'main'}}
                 steps {
-                    sh 'env'
                     script {
                         common.compile()
                     }
