@@ -22,13 +22,13 @@ def codequality() {
         //sh 'sonar-scanner -Dsonar.host.url=http://172.31.13.184:9000 -Dsonar.login=${SONARQUBE_USER} -Dsonar.password=${SONARQUBE_PASS} -Dsonar.projectKey=${component} ${sonar_extra_opts} -Dsonar.qualitygate.wait=true'
         sh 'echo OK'
     }
-
 }
 
-def prepareArtifacts(){
-    if (app_lang == "nodejs"){
-        sh 'zip -r ${component}-${TAG_NAME}.zip server.js node_modules'
+def prepareArtifacts() {
+    sh 'echo ${TAG_NAME} >VERSION'
+    if (app_lang == "maven") {
+        sh 'zip -r ${component}-${TAG_NAME}.zip ${component}.jar schema VERSION'
+    } else {
+        sh 'zip -r ${component}-${TAG_NAME}.zip * -x Jenkinsfile'
     }
-
-
 }
