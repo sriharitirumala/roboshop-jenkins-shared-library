@@ -1,62 +1,41 @@
-def call() {
+def call () {
     if (!env.sonar_extra_opts) {
         env.sonar_extra_opts=""
     }
+    pipeline {
+        agent any
 
-    if(env.TAG_NAME ==~ ".*") {
-        env.GTAG = "true"
-    } else {
-        env.GTAG = "false"
-    }
-    node('workstation') {
+        stages {
 
-        try {
-
-            stage('Check Out Code') {
-                cleanWs()
-                git branch: 'main', url: "https://github.com/sriharitirumala/${component}"
-            }
-
-            sh 'env'
-
-            if (env.BRANCH_NAME != "main") {
-                stage('Compile/Build') {
-                    common.compile()
+            stage('Compile/Build') {
+                steps {
+                    script {
+                        common.compile()
+                    }
                 }
             }
 
-            println GTAG
-            println BRANCH_NAME
-
-            if(env.GTAG != "true" && env.BRANCH_NAME != "main") {
-                stage('Test Cases') {
-                    common.testcases()
+            stage('Test Cases') {
+                steps {
+                    script {
+                        common.testcases()
+                    }
                 }
             }
-
-            if (BRANCH_NAME ==~ "PR-.*"){
-                stage('Code Quality') {
-                    common.codequality()
+            stage('Code Quality') {
+                steps {
+                    script {
+                        common.codequality()
+                    }
                 }
             }
-
-            if(env.GTAG == "true") {
-                stage('Package') {
-                    common.prepareArtifacts()
-                }
-                stage('Artifact Upload') {
-                    common.artifactUpload()
-                }
-            }
-
-
-        } catch (e) {
-            mail body: "<h1>${component} - Pipeline Failed \n ${BUILD_URL}</h1>", from: 'sritirumala30@gmail.com', subject: "${component}- Pipeline Failed", to: 'sritirumala30@gmail.com',  mimeType: 'text/html'
         }
+        post {
+            failure {
+                mail body: "${component} - Pipeline Failed \n ${BUILD_URL}", from: 'sritirumala30@gmail.com', subject: "${component} - Pipeline Failed", to: 'sritirumala30@gmail.com'
 
+            }
+        }
     }
+
 }
-
-
-
-
