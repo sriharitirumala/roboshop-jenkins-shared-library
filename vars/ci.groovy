@@ -17,10 +17,10 @@ def call() {
 
             stages {
 
-                stage('Unit Test Cases') {
+                stage('Test Cases') {
                     steps {
                         script {
-                            common.unittestcases()
+                            common.testcases()
                         }
                     }
                 }
