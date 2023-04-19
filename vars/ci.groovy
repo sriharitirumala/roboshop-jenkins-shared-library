@@ -35,9 +35,12 @@ def call() {
                         }
                     }
                 }
-
+            }
+        }
+        post {
+            failure {
+                mail body: "<h1>${component} - Pipeline Failed \n ${Build_URL}</h1>", from: "sritirumala30@gmail.com", to: "sritirumala30@gmail.com"
             }
         }
     }
-
 }
