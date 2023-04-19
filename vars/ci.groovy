@@ -1,6 +1,6 @@
-def call () {
+def call() {
     if (!env.sonar_extra_opts) {
-        env.sonar_extra_opts=""
+        env.sonar_extra_opts = ""
     }
     pipeline {
         agent any
@@ -15,24 +15,26 @@ def call () {
                 }
             }
 
-            stage('Test Cases') {
-                steps {
-                    script {
-                        common.testcases()
+            stages {
+
+                stage('Unit Test Cases') {
+                    steps {
+                        script {
+                            common.unittestcases()
+                        }
                     }
                 }
             }
-            stage('Code Quality') {
-                steps {
-                    script {
-                        common.codequality()
+
+            stages {
+
+                stage('Code quality') {
+                    steps {
+                        script {
+                            common.codequality()
+                        }
                     }
                 }
-            }
-        }
-        post {
-            failure {
-                mail body: "${component} - Pipeline Failed \n ${BUILD_URL}", from: 'sritirumala30@gmail.com', subject: "${component} - Pipeline Failed", to: 'sritirumala30@gmail.com'
 
             }
         }
