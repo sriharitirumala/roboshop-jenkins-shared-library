@@ -1,46 +1,58 @@
 def call() {
     if (!env.sonar_extra_opts) {
-        env.sonar_extra_opts = ""
+        env.sonar_extra_opts=""
     }
-    pipeline {
-        agent any
 
-        stages {
+    if(env.TAG_NAME ==~ ".*") {
+        env.GTAG = "true"
+    } else {
+        env.GTAG = "false"
+    }
+    node('workstation') {
 
-            stage('Compile/Build') {
-                steps {
-                    script {
-                        common.compile()
-                    }
+        try {
+
+            stage('Check Out Code') {
+                cleanWs()
+                git branch: 'main', url: "https://github.com/sriharitirumala/${component}"
+            }
+
+            sh 'env'
+
+            if (env.BRANCH_NAME != "main") {
+                stage('Compile/Build') {
+                    common.compile()
                 }
             }
 
-            stages {
+            println GTAG
+            println BRANCH_NAME
 
+            if(env.GTAG != "true" && env.BRANCH_NAME != "main") {
                 stage('Test Cases') {
-                    steps {
-                        script {
-                            common.testcases()
-                        }
-                    }
+                    common.testcases()
                 }
             }
 
-            stages {
-
-                stage('Code quality') {
-                    steps {
-                        script {
-                            common.codequality()
-                        }
-                    }
+            if (BRANCH_NAME ==~ "PR-.*"){
+                stage('Code Quality') {
+                    common.codequality()
                 }
             }
-        }
-        post {
-            failure {
-                mail body: "<h1>${component} - Pipeline Failed \n ${Build_URL}</h1>", from: "sritirumala30@gmail.com", to: "sritirumala30@gmail.com"
+
+            if(env.GTAG == "true") {
+                stage('Package') {
+                    common.prepareArtifacts()
+                }
+                stage('Artifact Upload') {
+                    common.artifactUpload()
+                }
             }
+
+
+        } catch (e) {
+            mail body: "<h1>${component} - Pipeline Failed \n ${BUILD_URL}</h1>", from: 'sritirumala30@gmail.com', subject: "${component} - Pipeline Failed", to: 'sritirumala30@gmail.com',  mimeType: 'text/html'
         }
+
     }
 }
