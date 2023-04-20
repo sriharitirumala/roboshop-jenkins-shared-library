@@ -24,7 +24,16 @@ def codequality() {
     }
 }
 
-def Artifactsupload() {
+def prepareArtifacts() {
+    sh 'echo ${TAG_NAME} >VERSION'
+    if (app_lang == "nodejs") {
+        sh 'zip -r ${component}-${TAG_NAME}.zip ${component}.jar schema VERSION'
+    } else {
+        sh 'zip -r ${component}-${TAG_NAME}.zip * -x Jenkinsfile'
+    }
+}
+
+def artifactupload() {
     sh 'echo ${TAG_NAME} >VERSION'
     if (app_lang == "nodejs") {
         sh 'zip -r ${component}-${TAG_NAME}.zip ${component}.jar schema VERSION'
