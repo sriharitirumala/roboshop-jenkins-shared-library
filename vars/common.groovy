@@ -35,9 +35,7 @@ def prepareArtifacts() {
 
 def artifactupload() {
     sh 'echo ${TAG_NAME} >VERSION'
-    if (app_lang == "nodejs") {
-        sh 'zip -r ${component}-${TAG_NAME}.zip ${component}.jar schema VERSION'
-    } else {
-        sh 'zip -r ${component}-${TAG_NAME}.zip * -x Jenkinsfile'
+    if (app_lang == "maven") {
+        sh 'curl -v -u admin:admin123 --upload-file pom.xml http://localhost:8081/repository/maven-releases/org/foo/1.0/foo-1.0.pom'
     }
 }
