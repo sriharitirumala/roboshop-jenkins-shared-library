@@ -24,7 +24,7 @@ def codequality() {
     }
 }
 
-def prepareArtifacts() {
+def Artifactsupload() {
     sh 'echo ${TAG_NAME} >VERSION'
     if (app_lang == "nodejs") {
         sh 'zip -r ${component}-${TAG_NAME}.zip ${component}.jar schema VERSION'
