@@ -35,7 +35,7 @@ def prepareArtifacts() {
 
 def artifactupload() {
     sh 'echo ${TAG_NAME} >VERSION'
-    if (app_lang == "maven") {
+    if (app_lang == "nodejs") {
         sh 'curl -v -u admin:admin123 --upload-file ${component}-${TAG_NAME}.zip http://172.31.4.97:8081/repository/${component}/${component}-${TAG_NAME}.zip'
     }
 }
