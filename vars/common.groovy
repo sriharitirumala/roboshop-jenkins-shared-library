@@ -26,16 +26,16 @@ def codequality() {
 
 def prepareArtifacts() {
     sh 'echo ${TAG_NAME} >VERSION'
-    if (app_lang == "nodejs") {
+    if (app_lang == "nodejs" || app_lang == "angular") {
         sh 'zip -r ${component}-${TAG_NAME}.zip ${component}.jar schema VERSION'
     } else {
         sh 'zip -r ${component}-${TAG_NAME}.zip * -x Jenkinsfile'
     }
 }
 
-def artifactupload() {
+def ArtifactUpload() {
     sh 'echo ${TAG_NAME} >VERSION'
-    if (app_lang == "nodejs") {
+    if (app_lang == "nodejs" || app_lang == "angular") {
         sh 'curl -v -u admin:admin123 --upload-file ${component}-${TAG_NAME}.zip http://172.31.4.97:8081/repository/${component}/${component}-${TAG_NAME}.zip'
     }
 }
