@@ -11,7 +11,7 @@ def call() {
         stages {
             stage('update parameter store') {
                 steps {
-                    sh 'aws ssm put-parameter --name ${environment}.${component}.app_version  --type "String" --value "${app_version}" --overwrite'
+                    sh 'aws ssm put-parameter --name ${environment}.${component}.app_version  --type "String" --value "1.0.0" --overwrite'
                 }
             }
 
