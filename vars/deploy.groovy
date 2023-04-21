@@ -1,6 +1,9 @@
 def call() {
     pipeline {
         agent any
+        options {
+            ansiColor('xterm')
+        }
 
         parameters {
             string(name: 'app_version', defaultValue: '', description: 'App Version')
